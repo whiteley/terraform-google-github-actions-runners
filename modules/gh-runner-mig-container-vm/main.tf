@@ -163,6 +163,7 @@ module "mig_template" {
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
+  machine_type         = var.machine_type
   disk_size_gb         = 100
   disk_type            = "pd-ssd"
   auto_delete          = true

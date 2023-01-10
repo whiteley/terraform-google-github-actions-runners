@@ -18,6 +18,7 @@ variable "project_id" {
   type        = string
   description = "The project id to deploy Github Runner"
 }
+
 variable "region" {
   type        = string
   description = "The GCP region to deploy instances into"
@@ -47,6 +48,7 @@ variable "subnet_ip" {
   description = "IP range for the subnet"
   default     = "10.10.10.0/24"
 }
+
 variable "subnet_name" {
   type        = string
   description = "Name for the subnet"
@@ -73,7 +75,6 @@ variable "repo_name" {
   type        = string
   description = "Name of the repo for the Github Action"
 }
-
 
 variable "repo_owner" {
   type        = string
@@ -102,6 +103,13 @@ variable "service_account" {
   type        = string
   default     = ""
 }
+
+variable "machine_type" {
+  type        = string
+  description = "The GCP machine type to deploy"
+  default     = "n1-standard-1"
+}
+
 variable "additional_metadata" {
   type        = map(any)
   description = "Additional metadata to attach to the instance"
