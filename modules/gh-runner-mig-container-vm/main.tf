@@ -50,6 +50,17 @@ resource "google_compute_subnetwork" "gh-subnetwork" {
   ip_cidr_range = var.subnet_ip
   region        = var.region
   network       = google_compute_network.gh-network[0].name
+
+  dynamic "log_config" {
+    for_each = var.subnet_enable_flow_logs == true ? [1] : []
+    content {
+      aggregation_interval = var.subnet_flow_logs_aggregation_interval
+      flow_sampling        = var.subnet_flow_logs_flow_sampling
+      metadata             = var.subnet_flow_logs_metadata
+      metadata_fields      = var.subnet_flow_logs_metadata == "CUSTOM_METADATA" ? var.subnet_flow_logs_metadata_fields : null
+      filter_expr          = var.subnet_flow_logs_filter_expr
+    }
+  }
 }
 
 resource "google_compute_router" "default" {
