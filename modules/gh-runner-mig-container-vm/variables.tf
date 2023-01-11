@@ -161,6 +161,17 @@ variable "machine_type" {
   default     = "n1-standard-1"
 }
 
+variable "source_image_family" {
+  type        = string
+  description = "Source image family. If neither source_image nor source_image_family is specified, defaults to the latest public Ubuntu image."
+  default     = "cos-stable"
+
+  validation {
+    condition     = startswith(var.source_image_family, "cos-")
+    error_message = "Must start with \"cos-\"."
+  }
+}
+
 variable "additional_metadata" {
   type        = map(any)
   description = "Additional metadata to attach to the instance"

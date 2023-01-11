@@ -32,6 +32,7 @@ locals {
   subnet_name     = var.create_network ? google_compute_subnetwork.gh-subnetwork[0].self_link : var.subnet_name
   service_account = var.service_account == "" ? google_service_account.runner_service_account[0].email : var.service_account
   # location   = var.regional ? var.region : var.zones[0]
+  cos_project = "cos-cloud"
 }
 
 /*****************************************
@@ -113,6 +114,10 @@ locals {
 module "gce-container" {
   source  = "terraform-google-modules/container-vm/google"
   version = "~> 3.0"
+
+  cos_image_family = trimprefix(var.source_image_family, "cos-")
+  cos_project      = local.cos_project
+
   container = {
     image = var.image
     env = [
@@ -179,8 +184,8 @@ module "mig_template" {
   disk_type            = "pd-ssd"
   auto_delete          = true
   name_prefix          = "gh-runner"
-  source_image_family  = "cos-stable"
-  source_image_project = "cos-cloud"
+  source_image_family  = var.source_image_family
+  source_image_project = local.cos_project
   startup_script       = "export TEST_ENV='hello'"
   source_image         = reverse(split("/", module.gce-container.source_image))[0]
   metadata             = merge(var.additional_metadata, { "gce-container-declaration" = module.gce-container.metadata_value })
