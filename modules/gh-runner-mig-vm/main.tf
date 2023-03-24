@@ -113,9 +113,16 @@ resource "google_secret_manager_secret_iam_member" "gh-secret-member" {
   Runner GCE Instance Template
  *****************************************/
 locals {
-  instance_name = "gh-runner-vm"
+  instance_name = "gh-runner-vm-${random_string.mig.result}"
+  template_name = "gh-runner-${random_string.mig.result}"
 }
 
+resource "random_string" "mig" {
+  length  = 6
+  upper   = false
+  numeric = false
+  special = false
+}
 
 module "mig_template" {
   source             = "terraform-google-modules/vm/google//modules/instance_template"
@@ -135,7 +142,7 @@ module "mig_template" {
   disk_size_gb         = 100
   disk_type            = "pd-ssd"
   auto_delete          = true
-  name_prefix          = "gh-runner"
+  name_prefix          = local.template_name
   source_image_family  = var.source_image_family
   source_image_project = var.source_image_project
   startup_script       = local.startup_script
